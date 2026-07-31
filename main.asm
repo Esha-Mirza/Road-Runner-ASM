@@ -255,3 +255,24 @@ NoLives:
     pop edx
     ret
 DrawLivesHearts ENDP
+
+; ---------------------------------------------------------
+; Draw the car
+; ---------------------------------------------------------
+DrawCar PROC
+    mov dh, 15      ; Car row
+    movzx eax, carX
+    add al, 7       ; Road offset
+    mov dl, al
+    call Gotoxy
+    
+    mov ecx, 3
+    mov esi, OFFSET carSymbol
+DrawCarLoop:
+    mov al, [esi]
+    call WriteChar
+    inc esi
+    loop DrawCarLoop
+    
+    ret
+DrawCar ENDP
