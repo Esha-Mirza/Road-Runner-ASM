@@ -592,3 +592,23 @@ CheckGameOver:
 MessagesDone:
     ret
 DrawMessages ENDP
+
+; ---------------------------------------------------------
+; Reset game to initial state
+; ---------------------------------------------------------
+ResetGame PROC
+    mov gameActive, 1
+    mov gamePaused, 0
+    mov carX, 15
+    mov lives, 3
+    mov score, 0
+    mov obstacleActive, 0
+    mov frameDelay, 100
+    mov needsUpdate, 1
+    mov gameOverDisplayed, 0
+    
+    call DrawScreen
+    ret
+ResetGame ENDP
+
+END main
