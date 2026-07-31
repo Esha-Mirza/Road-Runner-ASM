@@ -91,3 +91,14 @@ DrawFrame:
     
     jmp GameLoop
     
+GameOverScreen:
+    ; Only draw game over screen once
+    cmp gameOverDisplayed, 1
+    je WaitForInput
+    
+    ; Clear previous messages
+    mov dh, 10
+    mov dl, 8
+    call Gotoxy
+    mov ecx, 30s
+    
