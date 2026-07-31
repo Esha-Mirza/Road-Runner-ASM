@@ -508,3 +508,43 @@ CheckCollision PROC
 CollisionDone:
     ret
 CheckCollision ENDP
+
+; ---------------------------------------------------------
+; Update display (score and lives)
+; ---------------------------------------------------------
+UpdateDisplay PROC
+    ; Update score
+    mov dh, 3
+    mov dl, 12
+    call Gotoxy
+    mov eax, score
+    call WriteDec
+    
+    ; Clear any extra digits
+    mov ecx, 3
+ClearScore:
+    mov al, ' '
+    call WriteChar
+    loop ClearScore
+    
+    ; Update lives
+    call DrawLivesHearts
+    
+    ; Adjust speed based on score
+    mov eax, score
+    cmp eax, 30
+    jge FastSpeed
+    cmp eax, 15
+    jge MediumSpeed
+    jmp SpeedDone
+    
+FastSpeed:
+    mov frameDelay, 70
+    jmp SpeedDone
+    
+MediumSpeed:
+    mov frameDelay, 85
+    
+SpeedDone:
+    ret
+UpdateDisplay ENDP
