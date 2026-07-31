@@ -218,3 +218,40 @@ DrawSides:
     
     ret
 DrawScreen ENDP
+
+; ---------------------------------------------------------
+; Draw lives as hearts
+; ---------------------------------------------------------
+DrawLivesHearts PROC
+    ; Clear the hearts area first (6 characters: 3 hearts + spaces)
+    push edx
+    mov dh, 3
+    mov dl, 32
+    call Gotoxy
+    
+    mov ecx, 6
+ClearHearts:
+    mov al, ' '
+    call WriteChar
+    loop ClearHearts
+    
+    ; Now draw hearts based on current lives
+    mov dh, 3
+    mov dl, 32
+    call Gotoxy
+    
+    movzx ecx, lives
+    cmp ecx, 0
+    je NoLives
+    
+DrawHeartsLoop:
+    mov al, 3      ; Heart symbol ASCII
+    call WriteChar
+    mov al, ' '
+    call WriteChar
+    loop DrawHeartsLoop
+    
+NoLives:
+    pop edx
+    ret
+DrawLivesHearts ENDP
