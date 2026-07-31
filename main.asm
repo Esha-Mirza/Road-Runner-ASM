@@ -295,3 +295,81 @@ DrawObstacle PROC
 SkipDraw:
     ret
 DrawObstacle ENDP
+
+; --------------------------------------------------------
+; Handle keyboard input - FIXED: Using ReadKey correctly
+; --------------------------------------------------------
+HandleInput PROC
+    ; Try to read a key without waiting
+    ; In Irvine32, ReadKey sets ZF if no key is available
+    call ReadKey
+    jz NoInput          ; No key pressed (ZF = 1)
+    
+    ; Process the key (in AL for ASCII, AH for scan code)
+    
+    cmp al, 'a'
+    je MoveLeft
+    cmp al, 'A'
+    je MoveLeft
+    
+    cmp al, 'd'
+    je MoveRight
+    cmp al, 'D'
+    je MoveRight
+    
+    cmp al, 'p'
+    je TogglePause
+    cmp al, 'P'
+    je TogglePause
+    
+    cmp al, 'q'
+    je QuitGame
+    cmp al, 'Q'
+    je QuitGame
+    
+    cmp al, 'r'
+    je RestartGame
+    cmp al, 'R'
+    je RestartGame
+    
+    ; Check for arrow keys (scan codes)
+    cmp ah, 4Bh        ; Left arrow key scan code
+    je MoveLeft
+    
+    cmp ah, 4Dh        ; Right arrow key scan code
+    je MoveRight
+    
+    jmp NoInput
+    
+MoveLeft:
+    cmp carX, 1
+    jle NoInput
+    dec carX
+    mov needsUpdate, 1
+    jmp NoInput
+    
+MoveRight:
+    cmp carX, 27
+    jge NoInput
+    inc carX
+    mov needsUpdate, 1
+    jmp NoInput
+    
+TogglePause:
+    xor gamePaused, 1
+    mov needsUpdate, 1
+    jmp NoInput
+    
+QuitGame:
+    mov gameActive, 0
+    jmp NoInput
+    
+RestartGame:
+    cmp gameActive, 0
+    jne NoInput
+    ; Only restart if game is over
+    call ResetGame
+    
+NoInput:
+    ret
+HandleInput ENDP
