@@ -276,3 +276,22 @@ DrawCarLoop:
     
     ret
 DrawCar ENDP
+
+; --------------------------------------------------------
+; Draw the obstacle
+; --------------------------------------------------------
+DrawObstacle PROC
+    cmp obstacleActive, 1
+    jne SkipDraw
+    
+    mov dh, obstacleY
+    movzx eax, obstacleX
+    add al, 7
+    mov dl, al
+    call Gotoxy
+    mov al, obstacleSymbol
+    call WriteChar
+    
+SkipDraw:
+    ret
+DrawObstacle ENDP
