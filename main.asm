@@ -150,3 +150,71 @@ QuitFromOver:
     ; Should never reach here
     invoke ExitProcess, 0
 main ENDP
+
+
+; ---------------------------------------------------------
+; Draw static screen elements
+; ---------------------------------------------------------
+DrawScreen PROC
+    call Clrscr
+    
+    ; Title
+    mov dh, 1
+    mov dl, 10
+    call Gotoxy
+    mov edx, OFFSET titleMsg
+    call WriteString
+    
+    ; Score
+    mov dh, 3
+    mov dl, 5
+    call Gotoxy
+    mov edx, OFFSET scoreMsg
+    call WriteString
+    mov eax, score
+    call WriteDec
+    
+    ; Lives
+    mov dh, 3
+    mov dl, 25
+    call Gotoxy
+    mov edx, OFFSET livesMsg
+    call WriteString
+    call DrawLivesHearts
+    
+    ; Road top
+    mov dh, 5
+    mov dl, 5
+    call Gotoxy
+    mov edx, OFFSET topBorder
+    call WriteString
+    
+    ; Road sides
+    mov ecx, 10
+    mov dh, 6
+DrawSides:
+    push ecx
+    mov dl, 5
+    call Gotoxy
+    mov edx, OFFSET sideBorder
+    call WriteString
+    inc dh
+    pop ecx
+    loop DrawSides
+    
+    ; Road bottom
+    mov dh, 16
+    mov dl, 5
+    call Gotoxy
+    mov edx, OFFSET bottomBorder
+    call WriteString
+    
+    ; Controls
+    mov dh, 18
+    mov dl, 5
+    call Gotoxy
+    mov edx, OFFSET controlsMsg
+    call WriteString
+    
+    ret
+DrawScreen ENDP
