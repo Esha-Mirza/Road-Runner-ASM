@@ -138,4 +138,15 @@ WaitForInput:
     
     ; If any other key, ignore and keep waiting
     jmp WaitForInput
+
+RestartFromOver:
+    call ResetGame
+    mov gameOverDisplayed, 0
+    jmp GameLoop
     
+QuitFromOver:
+    invoke ExitProcess, 0
+    
+    ; Should never reach here
+    invoke ExitProcess, 0
+main ENDP
