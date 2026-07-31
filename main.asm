@@ -123,3 +123,19 @@ ClearGameOverArea:
     
     mov gameOverDisplayed, 1
     
+WaitForInput:
+    ; Wait specifically for R or Q
+    call ReadChar
+    
+    cmp al, 'r'
+    je RestartFromOver
+    cmp al, 'R'
+    je RestartFromOver
+    cmp al, 'q'
+    je QuitFromOver
+    cmp al, 'Q'
+    je QuitFromOver
+    
+    ; If any other key, ignore and keep waiting
+    jmp WaitForInput
+    
