@@ -43,3 +43,35 @@ INCLUDE Irvine32.inc
     
     ; Variable to track game over state separately
     gameOverDisplayed BYTE 0
+
+.code
+; ========================================================
+; MAIN GAME LOOP
+; ========================================================
+main PROC
+    call Randomize
+    call DrawScreen
+    
+GameLoop:
+    ; Handle input
+    call HandleInput
+    
+    ; Skip updates if paused
+    cmp gamePaused, 1
+    je DrawFrame
+    
+    ; Skip updates if game over
+    cmp gameActive, 0
+    je GameOverScreen
+    
+    ; Update game logic
+    call UpdateObstacle
+    call CheckCollision
+    
+    ; Update display if needed
+    cmp needsUpdate, 1
+    jne DrawFrame
+    
+    call UpdateDisplay
+    mov needsUpdate, 0
+    
