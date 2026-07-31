@@ -373,3 +373,14 @@ RestartGame:
 NoInput:
     ret
 HandleInput ENDP
+
+; --------------------------------------------------------
+; Check if a key is pressed (non-blocking)
+; Returns: ZF = 1 if no key, ZF = 0 if key available
+; --------------------------------------------------------
+CheckKeyPressed PROC
+    ; This is a wrapper to check if a key is available
+    ; ReadKey sets ZF if no key is in the buffer
+    call ReadKey
+    ret
+CheckKeyPressed ENDP
