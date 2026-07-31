@@ -548,3 +548,47 @@ MediumSpeed:
 SpeedDone:
     ret
 UpdateDisplay ENDP
+
+; ---------------------------------------------------------
+; Draw game messages
+; ---------------------------------------------------------
+DrawMessages PROC
+    ; Clear message area
+    mov dh, 10
+    mov dl, 8
+    call Gotoxy
+    mov ecx, 30
+ClearArea:
+    mov al, ' '
+    call WriteChar
+    loop ClearArea
+    
+    ; Show appropriate message
+    cmp gamePaused, 1
+    jne CheckGameOver
+    
+    ; Pause message
+    mov dh, 10
+    mov dl, 13
+    call Gotoxy
+    mov edx, OFFSET pauseMsg
+    call WriteString
+    ret
+    
+CheckGameOver:
+    cmp gameActive, 0
+    jne MessagesDone
+    
+    ; Game over message (only show if not already displayed)
+    cmp gameOverDisplayed, 1
+    je MessagesDone
+    
+    mov dh, 10
+    mov dl, 8
+    call Gotoxy
+    mov edx, OFFSET gameOverMsg
+    call WriteString
+    
+MessagesDone:
+    ret
+DrawMessages ENDP
