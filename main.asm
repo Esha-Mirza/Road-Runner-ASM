@@ -45,9 +45,9 @@ INCLUDE Irvine32.inc
     gameOverDisplayed BYTE 0
 
 .code
-; ========================================================
+; ---------------------------------------------------------
 ; MAIN GAME LOOP
-; ========================================================
+; ---------------------------------------------------------
 main PROC
     call Randomize
     call DrawScreen
@@ -74,4 +74,20 @@ GameLoop:
     
     call UpdateDisplay
     mov needsUpdate, 0
+
+DrawFrame:
+    ; Draw everything
+    call DrawCar
+    call DrawObstacle
+    call DrawMessages
+    
+    ; Control speed
+    mov eax, frameDelay
+    call Delay
+    
+    ; Check if should exit
+    cmp gameActive, 0
+    je GameOverScreen
+    
+    jmp GameLoop
     
