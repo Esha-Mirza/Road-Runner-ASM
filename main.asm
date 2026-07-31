@@ -90,7 +90,7 @@ DrawFrame:
     je GameOverScreen
     
     jmp GameLoop
-    
+
 GameOverScreen:
     ; Only draw game over screen once
     cmp gameOverDisplayed, 1
@@ -101,4 +101,25 @@ GameOverScreen:
     mov dl, 8
     call Gotoxy
     mov ecx, 30s
+
+ClearGameOverArea:
+    mov al, ' '
+    call WriteChar
+    loop ClearGameOverArea
+    
+    ; Show game over message
+    mov dh, 10
+    mov dl, 8
+    call Gotoxy
+    mov edx, OFFSET gameOverMsg
+    call WriteString
+    
+    ; Show instruction to press specific key
+    mov dh, 12
+    mov dl, 8
+    call Gotoxy
+    mov edx, OFFSET pressAnyKeyMsg
+    call WriteString
+    
+    mov gameOverDisplayed, 1
     
