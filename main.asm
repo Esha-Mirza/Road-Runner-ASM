@@ -384,3 +384,93 @@ CheckKeyPressed PROC
     call ReadKey
     ret
 CheckKeyPressed ENDP
+
+; ---------------------------------------------------------
+; Update obstacle movement
+; ---------------------------------------------------------
+UpdateObstacle PROC
+    ; Skip if no active obstacle
+    cmp obstacleActive, 0
+    je MaybeSpawn
+    
+    ; Erase old position
+    mov dh, obstacleY
+    movzx eax, obstacleX
+    add al, 7
+    mov dl, al
+    call Gotoxy
+    mov al, ' '
+    call WriteChar
+    
+    ; Move down
+    inc obstacleY
+    
+    ; Check if passed bottom
+    cmp obstacleY, 16
+    jl CheckCollisionPosition
+    
+    ; Obstacle passed safely
+    inc score
+    mov obstacleActive, 0
+    mov needsUpdate, 1
+    jmp UpdateDone
+    
+MaybeSpawn:
+    ; 20% chance to spawn
+    mov eax, 5
+    call RandomRange
+    cmp eax, 0
+    jne UpdateDone
+    
+    ; Spawn new obstacle
+    mov obstacleActive, 1
+    mov obstacleY, 6
+    
+    ; Random X position
+    mov eax, 28
+    call RandomRange
+    mov obstacleX, al
+    mov needsUpdate, 1
+    jmp UpdateDone
+    
+CheckCollisionPosition:
+    ; Check if at car row
+    cmp obstacleY, 15
+    jne DrawNewPosition
+    
+    ; Check collision with car
+    mov al, obstacleX
+    cmp al, carX
+    jl DrawNewPosition      ; Obstacle left of car
+    mov bl, carX
+    add bl, 2               ; Car width
+    cmp al, bl
+    jg DrawNewPosition      ; Obstacle right of car
+    
+    ; COLLISION DETECTED!
+    ; Remove obstacle
+    mov obstacleActive, 0
+    
+    ; Decrease lives
+    dec lives
+    mov needsUpdate, 1
+    
+    ; Check if game over
+    cmp lives, 0
+    jg DrawNewPosition
+    mov gameActive, 0
+    jmp UpdateDone
+    
+DrawNewPosition:
+    ; Draw at new position
+    mov dh, obstacleY
+    movzx eax, obstacleX
+    add al, 7
+    mov dl, al
+    call Gotoxy
+    mov al, obstacleSymbol
+    call WriteChar
+    
+UpdateDone:
+    ret
+UpdateObstacle ENDP
