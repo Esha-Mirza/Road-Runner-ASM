@@ -474,3 +474,37 @@ DrawNewPosition:
 UpdateDone:
     ret
 UpdateObstacle ENDP
+
+; ---------------------------------------------------------
+; Check for collisions
+; ---------------------------------------------------------
+CheckCollision PROC
+    ; Only check if obstacle is active and at car row
+    cmp obstacleActive, 1
+    jne CollisionDone
+    
+    cmp obstacleY, 15
+    jne CollisionDone
+    
+    ; Double-check collision
+    mov al, obstacleX
+    cmp al, carX
+    jl CollisionDone
+    mov bl, carX
+    add bl, 2
+    cmp al, bl
+    jg CollisionDone
+    
+    ; If we get here and obstacle is still active at car row,
+    ; it means UpdateObstacle didn't handle it properly
+    mov obstacleActive, 0
+    dec lives
+    mov needsUpdate, 1
+    
+    cmp lives, 0
+    jg CollisionDone
+    mov gameActive, 0
+    
+CollisionDone:
+    ret
+CheckCollision ENDP
